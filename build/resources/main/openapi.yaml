@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  description: 뭐지
+  title: 열심히해보자
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+tags:
+- description: 공지입니당
+  name: announcements
+paths:
+  /announcements:
+    get:
+      description: 이용자가 공지를 모두 조회한다.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/_announcements_get_200_response_inner'
+                type: array
+          description: Ok
+      summary: 공지 전체 조회
+      tags:
+      - 공지
+    post:
+      description: 이용자가 공지를 작성한다.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcementCreateRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: 공지 위치입니다.
+              explode: false
+              schema:
+                example: /announcements/1
+                type: string
+              style: simple
+      summary: 공지 작성
+      tags:
+      - 공지
+  /announcements/{announcementId}:
+    get:
+      description: 이용자가 공지를 1개 조회한다.
+      parameters:
+      - description: 공지 ID
+        explode: false
+        in: path
+        name: announcementId
+        required: true
+        schema:
+          type: number
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcementResponse'
+          description: Ok
+      summary: 공지 단건 조회
+      tags:
+      - 공지
+components:
+  schemas:
+    announcementCreateRequest:
+      properties:
+        title:
+          example: 내일부터 재택근무합니다.
+          type: string
+        content:
+          example: 종료기간은 추후 공지하겠습니다.
+          type: string
+        writerId:
+          example: 1
+          type: number
+      type: object
+    announcementResponse:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        id: 1
+        writer:
+          name: 제이슨
+          id: 1
+        title: 내일부터 재택근무합니다.
+        content: 종료기간은 추후 공지하겠습니다.
+      properties:
+        id:
+          example: 1
+          type: number
+        title:
+          example: 내일부터 재택근무합니다.
+          type: string
+        content:
+          example: 종료기간은 추후 공지하겠습니다.
+          type: string
+        writer:
+          $ref: '#/components/schemas/writer'
+        createdAt:
+          format: date-time
+          type: string
+      type: object
+    writer:
+      example:
+        name: 제이슨
+        id: 1
+      properties:
+        id:
+          example: 1
+          type: number
+        name:
+          example: 제이슨
+          type: string
+      type: object
+    _announcements_get_200_response_inner:
+      anyOf:
+      - $ref: '#/components/schemas/announcementResponse'
+      - $ref: '#/components/schemas/announcementResponse'
+      - $ref: '#/components/schemas/announcementResponse'
